@@ -36,6 +36,15 @@ func NewHandler(s Story) http.HandlerFunc {
 		if chapter == "" {
 			chapter = "intro"
 		}
-		tpl.Execute(w, s[chapter])
+
+		if chapter, ok := s[chapter]; ok {
+			err := tpl.Execute(w, chapter)
+			if err != nil {
+				http.Error(w, "Something went wrong.", http.StatusInternalServerError)
+				return
+			}
+		}
+
+		http.Error(w, "Story not found", http.StatusNotFound)
 	}
 }
