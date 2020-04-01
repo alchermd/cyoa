@@ -2,7 +2,9 @@ package cyoa
 
 import (
 	"encoding/json"
+	"html/template"
 	"io"
+	"net/http"
 )
 
 type Story map[string]Chapter
@@ -25,4 +27,15 @@ func JsonToStory(r io.Reader) (Story, error) {
 		return nil, err
 	}
 	return story, nil
+}
+
+func NewHandler(s Story) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		tpl := template.Must(template.ParseFiles("views/story.html"))
+		chapter := r.URL.Path[1:]
+		if chapter == "" {
+			chapter = "intro"
+		}
+		tpl.Execute(w, s[chapter])
+	}
 }
