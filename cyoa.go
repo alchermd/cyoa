@@ -29,9 +29,12 @@ func JsonToStory(r io.Reader) (Story, error) {
 	return story, nil
 }
 
-func NewHandler(s Story) http.HandlerFunc {
+func NewHandler(s Story, tpl *template.Template) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		tpl := template.Must(template.ParseFiles("views/story.html"))
+		if tpl == nil {
+			tpl = template.Must(template.ParseFiles("views/story.html"))
+		}
+
 		chapter := r.URL.Path[1:]
 		if chapter == "" {
 			chapter = "intro"
@@ -41,8 +44,8 @@ func NewHandler(s Story) http.HandlerFunc {
 			err := tpl.Execute(w, chapter)
 			if err != nil {
 				http.Error(w, "Something went wrong.", http.StatusInternalServerError)
-				return
 			}
+			return
 		}
 
 		http.Error(w, "Story not found", http.StatusNotFound)

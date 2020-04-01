@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>{{ .Title }}</title>
+	<style type="text/css">
+		body {
+			width: 50%;
+			margin: 0 auto;
+			text-align: center;
+		}
+	</style>
+</head>
+<body>
+	<h1>{{ .Title }}</h1>
+	
+	{{ range .Paragraphs }}
+		<p>{{ . }}</p>
+	{{ end }}
+	<ul>
+		{{ range .Options }}
+			<li><a href="/{{ .Chapter }}">{{ .Text }}</a></li>
+		{{ end }}
+	</ul>
+</body>
+</html>
